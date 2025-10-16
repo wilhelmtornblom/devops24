@@ -10,4 +10,4 @@
 
 ## Visual Studio Code
 
-- Ansible Extensions (från Red Hat)
+- Extension "Ansible" (från Red Hat). Ansible language support
