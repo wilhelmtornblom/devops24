@@ -119,6 +119,28 @@ HINTS:
   also set the correct SELinux security context type on the directory and files. The context in question
   in this case should be `httpd_sys_content_t` for the `/var/www/example.internal/html/` directory.
 
+  ### QUESTION A Answer:
+  The task to create the directory structure:
+  ```
+      - name: Setting permissions for /var/www/example.internal/html/
+      ansible.builtin.file:
+        path: /var/www/example.internal/html
+        state: directory
+        recurse: true
+        seuser: system_u
+        serole: object_r
+        setype: httpd_sys_content_t
+        owner: nginx
+        group: nginx
+  ```
+  And the task to upload the index.html-file:
+  ```
+      - name: Copy from files/index.html to /var/www/example.internal/html/index.html
+      ansible.builtin.copy:
+        src: files/index.html
+        dest: /var/www/example.internal/html/index.html
+  ```
+
 # QUESTION B
 
 To each of the tasks that change configuration files in the webserver, add a `register: [variable_name]`.
@@ -167,6 +189,9 @@ There are several ways to accomplish this, and there is no _best_ way to do this
 
 Is this a good way to handle these types of conditionals? What do you think?
 
+### QUESTION B Answer:
+I think it is a okay way to handle it, my only problem is that it is a little redundant and I can only imagine how annoying it would be to set up for larger ansible playbooks.
+
 # BONUS QUESTION
 
 Imagine you had a playbook with hundreds of tasks to be done on several hosts, and each one of these tasks
@@ -177,3 +202,7 @@ would you like the flow to work?
 
 Describe in simple terms what your preferred task flow would look like, not necessarily implemented in
 Ansible, but in general terms.
+
+### BONUS QUESTION Answer:
+My prefered task flow would be:
+Run the ansible playbook -> if any changes have been done that require a restart/reload -> restart just the host/hosts that require a restart/reload
