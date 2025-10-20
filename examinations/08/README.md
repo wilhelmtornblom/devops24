@@ -29,5 +29,24 @@ to authenticate as root:
 * Since we're authenticating through a socket, we should ignore the requirement for a `~/.my.cnf` file.
 * For simplicity's sake, let's grant `ALL` privileges on `webapp.*` to `webappuser`
 
+### QUESTION A Answer:
+I added the following ansible tasks to create a databas & database user.
+```
+    - name: Create a MariaDB database
+      community.mysql.mysql_db:
+        name: webappdb
+        login_unix_socket: /var/lib/mysql/mysql.sock
+        state: present
+
+
+    - name: Create MariaDB User
+      community.mysql.mysql_user:
+        name: webappuser
+        password: secretpassword
+        login_unix_socket: /var/lib/mysql/mysql.sock
+        priv: 'webappdb.*:ALL'
+        state: present
+```
+
 # Documentation and Examples
 https://docs.ansible.com/ansible/latest/collections/community/mysql/index.html
