@@ -1,0 +1,15 @@
+---
+- name: Copy https.conf
+  hosts: web
+  become: true
+  tasks:
+    - name: Copy from files/https.conf to /etc/nginx/conf.d/https.conf
+      ansible.builtin.copy:
+        src: files/https.conf
+        dest: /etc/nginx/conf.d/https.conf
+
+    - name: Ensure nginx is running
+      ansible.builtin.service:
+        name: nginx
+        enabled: true
+        state: reloaded

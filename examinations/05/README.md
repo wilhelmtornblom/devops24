@@ -76,6 +76,9 @@ What does the output look like the first time you run this playbook?
 
 What does the output look like the second time you run this playbook?
 
+### QUESTION A Answer:
+The first time I ran the playbook the output showed the "changed" flag as true while the second time it showed the changed flag as false
+
 # QUESTION B
 
 Even if we have copied the configuration to the right place, we still do not have a working https service
@@ -114,12 +117,45 @@ Again, these addresses are just examples, make sure you use the IP of the actual
 Note also that `curl` needs the `--insecure` option to establish a connection to a HTTPS server with
 a self signed certificate.
 
+
+### QUESTION B Answer:
+You can restart the nginx service in two ways, either with state: reloaded or state: restarted. I chose state:reloaded beacuse it is prefered to reload a service instead of restarting if possible beacuse it avoids downtime
+```
+    - name: Ensure nginx is running
+      ansible.builtin.service:
+        name: nginx
+        enabled: true
+        state: reloaded
+
+```
+
 # QUESTION C
 
 What is the disadvantage of having a task that _always_ makes sure a service is restarted, even if there is
 no configuration change?
 
+### QUESTION C Answer:
+The disadvantage of restarting a service is that there can be downtime which in turn means that the service is unavaibable for a short time and that can cause revenue loss for example.
+
 # BONUS QUESTION
 
 There are at least two _other_ modules, in addition to the `ansible.builtin.service` module that can restart
 a `systemd` service with Ansible. Which modules are they?
+
+### BONUS QUESTION Answer:
+
+ansible.builtin.systemd where you can restart the service with the following command:
+
+```
+- name: Ensure nginx is running
+  ansible.builtin.systemd:
+    name: nginx
+    state: restarted
+```
+And with ansible.builtin.command:
+
+```
+- name: Ensure nginx is running
+  ansible.builtin.command: systemctl restart nginx
+```
+

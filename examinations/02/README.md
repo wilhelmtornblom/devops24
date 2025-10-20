@@ -112,9 +112,15 @@ incompatibilities.
 
 What happens if you run `ansible-inventory --list` in the directory you created above?
 
+### QUESTION A Answer:
+When you run ansible-inventory --list it prints out information about the hosts in the inventory like the name of the host and its IP-adress it also prints out where your private SSH-key is located.
+
 ## QUESTION B
 
 What happens if you run `ansible-inventory --graph` in the directory you created above?
+
+### QUESTION B Answer:
+ansible-inventory --graph prints out the name and the IP-adress of each of the hosts in your inventory
 
 ## QUESTION C
 
@@ -131,6 +137,10 @@ Now run:
 Study the output of this command.
 
 What does the `ansible_connection=local` part mean?
+
+### QUESTION C Answer:
+I was able to reach all three hosts with the ansible -m ping all command.
+The ansible_connection=local tells ansible to NOT ping through SSH and to ping locally which makes it possible to ping your account.
 
 ## BONUS QUESTION
 
@@ -153,3 +163,11 @@ In your Ansible working directory where the `ansible.cfg' is, run
 You should get a pager displaying all available configuration values. How does it differ
 from when you run the same command in your usual home directory?
 
+### BONUS QUESTION Answer:
+I found that it differs at three different places, first the CONFIG_FILE() is empty in my home directory while it shows the path to my ansible.cfg in my ansible-directory.
+
+Same with DEFAULT_HOST_LIST.
+
+And lastly the HOST_KEY_CHECKING is also pointing at my ansible.cfg in my ansible-directory while it is empty in the home directory.
+
+So the changed parameters are the ones that were changed in the ansible.cfg file.

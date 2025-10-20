@@ -53,12 +53,36 @@ module.
 
 How can we make the web server start with an addition of just one line to the playbook above?
 
+### QUESTION A Answer:
+You can start the web server with state: started. This ensures that the service is running and if the service is already running ansible will do nothing.
+
+```
+---
+- name: Install a webserver
+  hosts: web
+  become: true
+  tasks:
+    - name: Ensure nginx is installed
+      ansible.builtin.package:
+        name: nginx
+        state: latest
+    - name: Ensure nginx is started at boot
+      ansible.builtin.service:
+        name: nginx
+        enabled: true
+        state: started
+
+```
+
 # QUESTION B
 
 You make have noted that the `become: true` statement has moved from a specific task to the beginning
 of the playbook, and is on the same indentation level as `tasks:`.
 
 What does this accomplish?
+
+### QUESTION B Answer:
+It makes it so that every task is executed with root privileges.
 
 # QUESTION C
 
@@ -72,8 +96,24 @@ log in to the machine and make sure that there are no `nginx` processes running.
 
 Why did we change the order of the tasks in the `04-uninstall-webserver.yml` playbook?
 
+### QUESTION C Answer:
+We changed the order of the tasks because we want to first stop the nginx service and then uninstall it otherwise it might cause problems when we reboot the web server and the system tries to start the service, leading to errors or warnings.
+
+
 # BONUS QUESTION
 
 Consider the output from the tasks above, and what we were actually doing on the machine.
 
 What is a good naming convention for tasks? (What SHOULD we write in the `name:` field`?)
+
+### BONUS QUESTION Answer:
+
+I chose 
+```
+name: Ensure nginx is stopped at boot
+``` 
+and
+```
+name: Ensure nginx is uninstalled
+```
+and I think that is a good naming convention that conveys that puropose of each task in a good and clear way.
