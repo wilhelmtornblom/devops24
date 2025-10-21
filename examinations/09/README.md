@@ -52,20 +52,19 @@ form, and make it possible to run the playbook as before, but with the password 
 Ansible Vault secret instead.
 
 ### QUESTION B Answer:
-First I created an encrypted string to use in my ansible playbook:
+First I created an encrypted file to use in my ansible playbook:
 ```
-ansible-vault encrypt_string password 'secretpassword' --name password
+ansible-vault create --vault-id password-file@prompt password.yml
 ```
-And after that I created a varaible in my playbook that saved the encrypted password in the variable password:
+And after that I wrote my password inside of the file that was created ``` password: secretpassword ```thereafter I ensured that the password was encrypted by doing ```cat password.yml ```
+
+
+
 ```
-  vars:
-    password: !vault |
-          $ANSIBLE_VAULT;1.1;AES256
-          65666565316265653432323361356231653332326536393133646331613861663063386434663039
-          3065363430636238303632656231363738303361653837360a306233633737653363356132303239
-          64393663653436616165363036356662663634343335373139396266323338636362316333333761
-          6565633833396639660a383262623638626333333963353066336537623131303133376162323065
-          6362
+- hosts: db
+  become: true
+  vars_files:
+    - password.yml
 ```
 thereafter I removed "secretpassword" in plain text and replaced it with the password variable:
 ```
@@ -77,8 +76,8 @@ thereafter I removed "secretpassword" in plain text and replaced it with the pas
         priv: 'webappdb.*:ALL'
         state: present
 ```
-And I can confirm that the password works by going in to the DB-server and typing:
+And then I saved my vault password to a .txt file and ran the following ansible playbook to confirm that it worked ``` ansible-playbook 09-mariadb-password.yml --vault-password-file vault-password.txt ``` and after that I logged in to my DB-server and succesfully logged in with the user name and password.
+
 ```
 mariadb -u webappuser -p
 ```
-and logging in with "secretpassword"
