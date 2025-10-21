@@ -1,0 +1,32 @@
+---
+
+- name: Create groups and add users
+  hosts: web
+  become: true
+  vars_files:
+    - user-password.yml
+  tasks:
+
+    - name: Ensure groups exist
+      ansible.builtin.group:
+        name: "{{ item }}"
+        state: present
+      loop:
+        - wheel
+        - audio
+        - video
+        - tape
+        - tcpdump
+
+    - name: Create users and assign groups
+      ansible.builtin.user:
+        name: "{{ item.name }}"
+        state: present
+        groups: "{{ item.groups }}"
+        append: yes
+        password: "{{ password }}"
+      loop:
+        - { name: 'alovelace', realname: 'Ada Lovelace', groups: ['wheel', 'audio', 'video'] }
+        - { name: 'ghopper', realname: 'Grace Hopper',  groups: ['wheel', 'audio'] }
+        - { name: 'aturing', realname: 'Alan Turing',  groups: ['tape'] }
+        - { name: 'edijkstra', realname: 'Edsger Dijkstra', groups: ['tcpdump'] }
