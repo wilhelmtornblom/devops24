@@ -28,6 +28,21 @@ address of the virtual machine itself.
 
 Use the `ansible.builtin.template` module to accomplish this task.
 
+### QUESTION A Answer:
+To ensure that the correct IP-address is always used even if it changes I added ``` listen {{ ansible_default_ipv4.address }}; ```
+to my example.internal.conf.j2-file.
+After that I added the following task to my ansible playbook:
+```
+     - name: Jinja template
+      ansible.builtin.template:
+        src: templates/example.internal.conf.j2
+        dest: /etc/nginx/conf.d/example.internal.conf
+        owner: nginx
+        group: nginx
+        mode: '0644'
+```
+That copies my jinja2 template to my example.internal.conf-file on my web-server
+
 # Resources and Documentation
 
 * https://docs.ansible.com/ansible/latest/collections/ansible/builtin/template_module.html
