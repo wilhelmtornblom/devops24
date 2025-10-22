@@ -1,0 +1,10 @@
+---
+- name: COnfigure webserver
+  hosts: web
+  roles:
+    - webserver
+
+- name: Configure dbserver
+  hosts: db
+  roles:
+    - dbserver

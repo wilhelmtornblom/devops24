@@ -34,3 +34,31 @@
         src: index.html
         dest: /var/www/example.internal/html/index.html
   notify: Reload nginx
+
+- name: Ensure firewalld & python3-firewall are installed
+  become: true
+  ansible.builtin.package:
+    name:
+     - firewalld
+     - python3-firewall
+    state: present
+
+- name: Enable and start firewalld
+  become: true
+  ansible.builtin.service:
+    name: firewalld
+    state: started
+    enabled: yes
+
+- name: Open HTTP & HTTPS in firewalld
+  become: true
+  ansible.posix.firewalld:
+    service: "{{ item }}"
+    permanent: yes
+    state: enabled
+    immediate: yes
+  loop:
+   - http
+   - https
+
+
