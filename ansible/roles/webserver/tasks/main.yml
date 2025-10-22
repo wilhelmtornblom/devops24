@@ -1,2 +1,36 @@
 ---
 # tasks file for webserver
+- name: Copy from files/https.conf to /etc/nginx/conf.d/https.conf
+  become: true
+  ansible.builtin.copy:
+          src: https.conf
+          dest: /etc/nginx/conf.d/https.conf
+  notify: Reload nginx
+
+- name: Jinja template
+  become: true
+  ansible.builtin.template:
+        src: example.internal.conf.j2
+        dest: /etc/nginx/conf.d/example.internal.conf
+        owner: nginx
+        group: nginx
+        mode: '0644'
+  notify: Reload nginx
+
+- name: Setting permissions for /var/www/example.internal/html/
+  ansible.builtin.file:
+        path: /var/www/example.internal/html
+        state: directory
+        recurse: true
+        seuser: system_u
+        serole: object_r
+        setype: httpd_sys_content_t
+        owner: nginx
+        group: nginx
+
+- name: Copy from files/index.html to /var/www/example.internal/html/index.html
+  become: true
+  ansible.builtin.copy:
+        src: index.html
+        dest: /var/www/example.internal/html/index.html
+  notify: Reload nginx

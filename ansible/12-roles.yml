@@ -2,9 +2,9 @@
 - name: Configure the web server(s) according to specs
   hosts: web
   roles:
-    - webserver
+    - roles/webserver
 
 - name: Configure the database server(s) according to specs
   hosts: db
   roles:
-    - dbserver
+    - roles/dbserver
