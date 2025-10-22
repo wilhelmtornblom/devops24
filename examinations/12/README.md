@@ -43,4 +43,4 @@ to create a skeleton for a role. You won't need ALL the directories created by t
 but it gives you a starting point to fill out in case you don't want to start from scratch.
 
 ### QUESTION A Answer:
-First I ran the ``` ansible-galaxy role init webserver ``` & ``` ansible-galaxy role init dbserver ``` to create the folder structure and after that I copied over the site.yml to 12-roles.yml file and ran the playbook ``` ansible-playbook -i hosts 12-roles.yml ``` to confirm that everything was working.
+First I created a roles/ directory and then I ran the ``` ansible-galaxy role init webserver ``` & ``` ansible-galaxy role init dbserver ``` to create the folder structure and after that I copied over the site.yml to 12-roles.yml file and ran the playbook ``` ansible-playbook -i hosts 12-roles.yml ``` to confirm that everything was working.
