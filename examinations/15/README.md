@@ -47,6 +47,84 @@ and
 
 will get you on the right track, for instance if you've changed any of the Prometheus configuration.
 
+### QUESTION A Answer:
+First I began with downloading podman and running the prometheus.yml playbook.
+
+Next I created a new role under roles/ called node_explorer.
+
+1. Defaults
+I started by adding the variables I need to my default/main.yml-file
+```
+---
+# defaults file for node_exporter
+node_exporter_version: "1.8.2"
+node_exporter_user: "node_exporter"
+node_exporter_group: "node_exporter"
+node_exporter_bin_path: "/usr/local/bin/node_exporter"
+node_exporter_host: "0.0.0.0"
+node_exporter_port: "9100"
+node_exporter_options: ""
+node_exporter_restart: "on-failure"
+node_exporter_download_url: "https://github.com/prometheus/node_exporter/releases/download/v{{ node_exporter_version }}/node_exporter-{{ node_exporter_version }}.linux-amd64.tar.gz"
+```
+
+2. Templates
+Then I created a jinja template for the Node Exporter service 
+```
+[Unit]
+Description=Node Exporter
+
+[Service]
+User={{ node_exporter_user }}
+ExecStart={{ node_exporter_bin_path }} --web.listen-address={{ node_exporter_host }}:{{ node_exporter_port }}
+Restart={{ node_exporter_restart }}
+
+[Install]
+WantedBy=multi-user.target
+```
+where I use the variables from my defaults to tell the serivce the user, what ip-address to listen to and when to restart.
+
+3. Handlers
+And after that I added a simple handler that restarts node_exporter 
+```
+---
+# handlers file for node_exporter
+- name: Restart node_exporter
+  ansible.builtin.systemd:
+    name: node_exporter
+    state: restarted
+    daemon_reload: true
+```
+4. Tasks
+And when that was done I started working on the tasks, I began by creating one that created the group, user and then I downloaded the Node Exporter and extracted it to the /tmp folder and after that a task that create a systemd service and the task after that starts the service.
+And the last task I created was to allow node exporter through the firewall
+```
+- name: Allow Node Exporter firewall
+  ansible.posix.firewalld:
+    port: 9100/tcp
+    permanent: true
+    state: enabled
+    immediate: true
+```
+And then I created the 15-node_exporter.yml playbook:
+```
+---
+- name: Install Node Exporter on all servers
+  hosts: all
+  become: true
+  roles:
+    - node_exporter
+```
+And when I ran the playbook the first time it went smoothly with no errors and the node exporter service was active on both servers, but when I went to localhost:9090/targets it said that prometheus was not able to reach the db or webserver.
+The solution to this problem was to replace the dbserver and webserver lines with the ip-adresses in the prometheus.yml playbook and rerun it:
+```
+            - targets:
+                - 'node-exporter:9100'
+                - 'webserver_ip:9100'
+                - 'database_ip:9100'
+```
+
+
 # Resources and Information
 
 * https://github.com/prometheus/node_exporter/tree/master/examples/systemd
