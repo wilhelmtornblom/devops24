@@ -36,3 +36,38 @@ provided instead.
 To be able to use the password when running the playbooks later, you must use the `--ask-become-pass`
 option to `ansible` and `ansible-playbook` to provide the password. You can also place the password
 in a file, like with `ansible-vault`, or have it encrypted via `ansible-vault`.
+
+### QUESTION A Answer:
+I started with creating a role called set_password where I first created a variable called ``` deploy_user: "deploy" ``` in the defaults/main.yml-file and I was going to create the variable       ``` deploy_password: "hunter12" ``` in there aswell but decided to put that variable in the vars/main.yml instead so that I could encrypt only the password variable instead of both.
+
+I used the same vault password as I did for the examinations before so that I could use the vault-password.txt filer later which is not good from a security perspective but its easier to run the playbook that way.
+
+When everything was set up I started writing the tasks
+```
+---
+# tasks file for set_password
+- name: Set password for deploy
+  ansible.builtin.user:
+    name: "{{ deploy_user }}"
+    password: "{{ deploy_password }}"
+    update_password: always
+
+- name: Create sudoers rule with password requirement
+  ansible.builtin.lineinfile:
+    path: /etc/sudoers.d/deploy
+    line: "{{ deploy_user }} ALL=(ALL:ALL) ALL"
+    state: present
+    create: yes
+    mode: 0440
+    validate: /usr/sbin/visudo -cf %s
+
+- name: Remove passwordless sudo rule
+  ansible.builtin.lineinfile:
+    path: /etc/sudoers.d/deploy
+    line: "{{ deploy_user }} ALL=(ALL) NOPASSWD: ALL"
+    state: absent
+    validate: /usr/sbin/visudo -cf %s
+```
+Where I began with setting the password for the deploy user and after that I added the sudoers rule and then I removed the passwordless rule. For both the task where I added a rule and removed one I added ``` validate: /usr/sbin/visudo -cf %s ``` to ensure that the file is correctly saved, preventing being locked out of the servers.
+
+I ran the playbook ``` ansible-playbook 17-sudo-password.yml --vault-password-file vault-password.txt --ask-become-pass ``` and confirmed that the password worked and the ```/etc/sudoers.d/deploy ``` file was changed by going in to one of the servers and typing ``` sudo cat /etc/sudoers.d/deploy ```
