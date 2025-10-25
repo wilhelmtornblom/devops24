@@ -53,6 +53,9 @@ For instance:
 
 It is up to you to implement the solution you feel works best.
 
+### QUESTION A Answer:
+I used ``` ansible.builtin.package_facts & ansible.builtin.service_facts ``` to get information about the packages and services running on the servers and the ``` ansible.builtin.assert ``` to print out if the task failed/passed the test. I also added ``` ignore_errors: true ``` to the tasks to make sure that the playbook would continue to run if a task failed. I think this approach is very clear and easy to read.
+
 # BONUS QUESTION
 
 If you implement these tasks within one or more roles, you will gain enlightenment and additional karma.

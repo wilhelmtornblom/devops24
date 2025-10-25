@@ -1,0 +1,86 @@
+---
+- name: Security Compliance Checks
+  hosts: all
+  tasks:
+    - name: Gather the package facts
+      ansible.builtin.package_facts:
+
+    - name: Gather the service facts
+      ansible.builtin.service_facts:
+
+
+    - name: check for telnet-server (1 / 10)
+      ansible.builtin.assert:
+        fail_msg: "FAIL: telnet-server package is installed"
+        success_msg: "PASS: telnet-server package is not installed"
+        that: "'telnet-server' not in ansible_facts.packages"
+      ignore_errors: true
+
+    - name: Ensure firewalld is installed (2 / 10)
+      ansible.builtin.assert:
+        that: "'firewalld' in ansible_facts.packages"
+        fail_msg: "FAIL: firewalld is not installed"
+        success_msg: "PASS: firewalld is installed"
+      ignore_errors: true    
+
+    - name: Check firewalld service status (3 / 10)
+      ansible.builtin.assert:
+        that:
+          - ansible_facts.services['firewalld.service'].state == 'running'
+          - ansible_facts.services['firewalld.service'].status =='enabled'
+        fail_msg: "FAIL: firewalld is not running or is enabled"
+        success_msg: "PASS: firewalld is enabled and running"
+      ignore_errors: true    
+
+    - name: Ensure SELinux is installed (4 / 10)
+      ansible.builtin.assert:
+        that: "'libselinux' in ansible_facts.packages"
+        fail_msg: "FAIL: SELinux is not installed"
+        success_msg: "PASS: SELinux is installed"
+      ignore_errors: true
+
+    - name: Check SELinux status (5 / 10)
+      ansible.builtin.assert:
+        that:
+          - "ansible_facts.selinux.status == 'enabled'"
+          - "ansible_facts.selinux.mode in ['enforcing', 'permissive']"
+        fail_msg: "FAIL: SELinux is disabled"
+        success_msg: "PASS: SELinux is running"
+      ignore_errors: true
+
+    - name: Ensure FTP client is not installed (6 / 10)
+      ansible.builtin.assert:
+        that: "'ftp' not in ansible_facts.packages"
+        fail_msg: "FAIL: FTP Client IS installed"
+        success_msg: "PASS: FTP Client is NOT installed"
+      ignore_errors: true
+    
+    - name: Ensure cron daemon is enabled and active (7 / 10)
+      ansible.builtin.assert:
+        that:
+          - ansible_facts.services['crond.service'].state == 'running'
+          - ansible_facts.services['crond.service'].status == 'enabled'
+        success_msg: "PASS: cron daemon is running and enabled"
+        fail_msg: "FAIL: cron daemon is not enabled or running"
+      ignore_errors: true
+    
+    - name: Ensure cockpit web is not installed(8 / 10)
+      ansible.builtin.assert:
+        that: "'cockpit-ws' not in ansible_facts.packages"
+        fail_msg: "FAIL: cockpit is installed"
+        success_msg: "PASS: cockpit is not installed"
+      ignore_errors: true
+
+    - name: Ensure dns server is not installed (9 / 10)
+      ansible.builtin.assert:
+        that: "'bind' not in ansible_facts.packages"
+        fail_msg: "FAIL: dns server is installed"
+        success_msg: "PASS: dns server is not installed"
+      ignore_errors: true
+
+    - name: Ensure autofs is not installed (10 / 10)
+      ansible.builtin.assert:
+        that: "'autofs' not in ansible_facts.packages"
+        fail_msg: "FAIL: autofs is installed"
+        success_msg: "PASS: autofs is not installed"
+      ignore_errors: true
