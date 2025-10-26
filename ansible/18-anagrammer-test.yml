@@ -1,0 +1,23 @@
+---
+- name: Test anagrammer
+  hosts: localhost
+  connection: local
+
+  tasks:
+    - name: Test with hello world
+      anagrammer:
+        message: "hello world"
+      register: result
+
+    - name: Display result
+      ansible.builtin.debug:
+        var: result
+
+    - name: Test with palindrome
+      anagrammer:
+        message: "hannah"
+      register: p_result
+
+    - name: Display p_result
+      ansible.builtin.debug:
+        var: p_result

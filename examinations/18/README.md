@@ -58,6 +58,10 @@ If you pass in 'fail me', it should fail like this:
         "reversed_message": "em liaf"
     }
 
+### QUESTION A Answer:
+First I began with creating the library/ directory ``` mkdir -p library ``` where I created the anagrammer.py python file ``` nano anagrammer.py ``` and wrote three functions, one to reverse the input string, one to set up the ansible module and one to run the module. I also made the python file executable ``` chmod +x library/anagrammer.py ```.
+I was able to run all the test cases and get the expected output.
+
 # QUESTION B
 
 Study the output of `ansible-config dump | grep -i module_path`. You will notice that there is a directory
@@ -68,6 +72,9 @@ that uses this module with the correct parameters.
 
 You don't need to worry about FQCN and namespaces in this examination.
 
+### QUESTION B Answer:
+I began with creating the module directory ``` mkdir -p ~/.ansible/plugins/modules ``` and copied the anagrammer.py file to it ``` cp library/anagrammer.py ~/.ansible/plugins/modules/ ``` then I created 18-anagrammer-test.yml playbook and wrote two tasks that uses the anagrammer module and two that outputs the result.
+
 # QUESTION C
 
 Create a playbook called `18-anagrammer.yml` that uses this module.
@@ -75,6 +82,23 @@ Create a playbook called `18-anagrammer.yml` that uses this module.
 Make the playbook use a default variable for the message that can be overriden by using something like:
 
     $ ansible-playbook --verbose --extra-vars message='"This is a whole other message"' 18-custom-module.yml
+
+### QUESTION C Answer:
+I created the playbook and added the variable 
+```
+vars:
+    message: "hello world"
+``` 
+to use as my default variable in the task
+``` 
+  tasks:
+    - name: Run anagrammer
+      anagrammer:
+        message: "{{ message }}"
+      register: result
+```
+so it is displayed if no message is added when you run the playbook. 
+I was able to run the playbook with no added message and with the ``` ansible-playbook --verbose --extra-vars message='"This is a whole other message"' 18-custom-module.yml ``` command without any errors.
 
 # BONUS QUESTION
 

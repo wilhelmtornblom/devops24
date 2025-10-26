@@ -1,0 +1,17 @@
+---
+- name: Use anagrammer module with configurable message
+  hosts: localhost
+  connection: local
+
+  vars:
+    message: "hello world"
+
+  tasks:
+    - name: Run anagrammer
+      anagrammer:
+        message: "{{ message }}"
+      register: result
+
+    - name: Display result
+      debug:
+        var: result
