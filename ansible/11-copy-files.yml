@@ -11,4 +11,3 @@
         mode: 0600
       with_fileglob:
         - "files/*.md"
-

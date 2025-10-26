@@ -23,10 +23,25 @@
         name: "{{ item.name }}"
         state: present
         groups: "{{ item.groups }}"
-        append: yes
+        append: true
         password: "{{ password }}"
       loop:
-        - { name: 'alovelace', realname: 'Ada Lovelace', groups: ['wheel', 'audio', 'video'] }
-        - { name: 'ghopper', realname: 'Grace Hopper',  groups: ['wheel', 'audio'] }
-        - { name: 'aturing', realname: 'Alan Turing',  groups: ['tape'] }
-        - { name: 'edijkstra', realname: 'Edsger Dijkstra', groups: ['tcpdump'] }
+        - name: 'alovelace'
+          realname: 'Ada Lovelace'
+          groups:
+            - wheel
+            - audio
+            - video
+        - name: 'ghopper'
+          realname: 'Grace Hopper'
+          groups:
+            - wheel
+            - audio
+        - name: 'aturing'
+          realname: 'Alan Turing'
+          groups:
+            - tape
+        - name: 'edijkstra'
+          realname: 'Edsger Dijkstra'
+          groups:
+            - tcpdump

@@ -11,10 +11,10 @@
     path: /etc/sudoers.d/deploy
     line: "{{ deploy_user }} ALL=(ALL:ALL) ALL"
     state: present
-    create: yes
+    create: true
     mode: 0440
     validate: /usr/sbin/visudo -cf %s
-  
+
 - name: Remove passwordless sudo rule
   ansible.builtin.lineinfile:
     path: /etc/sudoers.d/deploy

@@ -21,7 +21,7 @@
         that: "'firewalld' in ansible_facts.packages"
         fail_msg: "FAIL: firewalld is not installed"
         success_msg: "PASS: firewalld is installed"
-      ignore_errors: true    
+      ignore_errors: true
 
     - name: Check firewalld service status (3 / 10)
       ansible.builtin.assert:
@@ -30,7 +30,7 @@
           - ansible_facts.services['firewalld.service'].status =='enabled'
         fail_msg: "FAIL: firewalld is not running or is enabled"
         success_msg: "PASS: firewalld is enabled and running"
-      ignore_errors: true    
+      ignore_errors: true
 
     - name: Ensure SELinux is installed (4 / 10)
       ansible.builtin.assert:
@@ -54,7 +54,7 @@
         fail_msg: "FAIL: FTP Client IS installed"
         success_msg: "PASS: FTP Client is NOT installed"
       ignore_errors: true
-    
+
     - name: Ensure cron daemon is enabled and active (7 / 10)
       ansible.builtin.assert:
         that:
@@ -63,7 +63,7 @@
         success_msg: "PASS: cron daemon is running and enabled"
         fail_msg: "FAIL: cron daemon is not enabled or running"
       ignore_errors: true
-    
+
     - name: Ensure cockpit web is not installed(8 / 10)
       ansible.builtin.assert:
         that: "'cockpit-ws' not in ansible_facts.packages"

@@ -34,7 +34,7 @@
         owner: nginx
         group: nginx
 
-    - name: Copy from files/index.html to /var/www/example.internal/html/index.html
+    - name: Copy index.html to /var/www/example.internal/html/index.html
       ansible.builtin.copy:
         src: files/index.html
         dest: /var/www/example.internal/html/index.html

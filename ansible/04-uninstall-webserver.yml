@@ -13,4 +13,3 @@
       ansible.builtin.package:
         name: nginx
         state: absent
-

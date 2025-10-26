@@ -13,7 +13,7 @@
   ansible.builtin.service:
     name: firewalld
     state: started
-    enabled: yes
+    enabled: true
 
 - name: Open mariaDB in firewalld
   become: true
@@ -21,5 +21,4 @@
     service: mysql
     permanent: true
     state: enabled
-    immediate: yes
-  
+    immediate: true
