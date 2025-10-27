@@ -8,6 +8,11 @@
         src: files/https.conf
         dest: /etc/nginx/conf.d/https.conf
 
+    - name: Ensure nginx is installed
+      ansible.builtin.package:
+        name: nginx
+        state: latest
+
     - name: Ensure nginx is running
       ansible.builtin.service:
         name: nginx
