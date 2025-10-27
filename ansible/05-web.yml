@@ -11,7 +11,7 @@
     - name: Ensure nginx is installed
       ansible.builtin.package:
         name: nginx
-        state: latest
+        state: present
 
     - name: Ensure nginx is running
       ansible.builtin.service:
